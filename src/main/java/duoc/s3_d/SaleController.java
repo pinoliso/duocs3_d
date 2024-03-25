@@ -21,9 +21,14 @@ public class SaleController {
         Product product2 = new Product(2L, "Hueso", 8.0, 12.0);
         Product product3 = new Product(3L, "Cepillo para gato", 8.0, 12.0);
 
-        sales.add(new Sale(1L, LocalDate.of(2024, 1, 3), List.of(new SaleDetail(product1, 3),new SaleDetail(product2, 1),new SaleDetail(product3, 1))));
-        sales.add(new Sale(2L, LocalDate.of(2024, 2, 14), List.of(new SaleDetail(product1, 4),new SaleDetail(product3, 3))));
-        sales.add(new Sale(3L, LocalDate.of(2024, 3, 22), List.of(new SaleDetail(product1, 1))));
+        sales.add(new Sale(1L, LocalDate.of(2023, 12, 20), List.of(new SaleDetail(product1, 2))));
+        sales.add(new Sale(2L, LocalDate.of(2024, 1, 3), List.of(new SaleDetail(product1, 3),new SaleDetail(product2, 1),new SaleDetail(product3, 1))));
+        sales.add(new Sale(3L, LocalDate.of(2024, 1, 10), List.of(new SaleDetail(product2, 2),new SaleDetail(product3, 1))));
+        sales.add(new Sale(4L, LocalDate.of(2024, 2, 14), List.of(new SaleDetail(product1, 4),new SaleDetail(product3, 3))));
+        sales.add(new Sale(5L, LocalDate.of(2024, 2, 14), List.of(new SaleDetail(product2, 2),new SaleDetail(product3, 1))));
+        sales.add(new Sale(6L, LocalDate.of(2024, 3, 22), List.of(new SaleDetail(product1, 1),new SaleDetail(product2, 2))));
+        sales.add(new Sale(7L, LocalDate.of(2024, 3, 23), List.of(new SaleDetail(product2, 1),new SaleDetail(product3, 3))));
+        sales.add(new Sale(8L, LocalDate.of(2024, 3, 24), List.of(new SaleDetail(product3, 4))));
     }
 
     @GetMapping("/sales")
