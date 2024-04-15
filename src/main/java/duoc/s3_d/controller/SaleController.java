@@ -1,7 +1,11 @@
-package duoc.s3_d;
+package duoc.s3_d.controller;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+
+import duoc.s3_d.model.Product;
+import duoc.s3_d.model.Sale;
+import duoc.s3_d.model.SaleDetail;
 
 import java.util.ArrayList;
 import java.util.List;

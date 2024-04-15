@@ -1,4 +1,4 @@
-package duoc.s3_d;
+package duoc.s3_d.model;
 
 public class SaleDetail {
     
