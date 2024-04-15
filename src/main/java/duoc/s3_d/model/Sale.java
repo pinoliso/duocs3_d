@@ -5,13 +5,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import lombok.Data;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Set;
 import java.util.List;
+import java.util.ArrayList;
 import java.time.LocalDate;
 
 @Data
@@ -22,13 +25,14 @@ public class Sale {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "sale_date")
     private LocalDate date;
 
-    @ManyToMany
-    @JoinTable(
-        name = "sale_product",
-        joinColumns = @JoinColumn(name = "sale_id"),
-        inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private Set<Product> products;
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
+    private List<SaleDetail> saleDetails = new ArrayList<>();
+
+    public void addSaleDetail(SaleDetail saleDetail) {
+        saleDetails.add(saleDetail);
+        saleDetail.setSale(this); 
+    }
 }

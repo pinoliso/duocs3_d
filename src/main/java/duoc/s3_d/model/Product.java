@@ -22,7 +22,4 @@ public class Product {
     private String name;
     private double costPrice;
     private double sellingPrice;
-
-    @ManyToMany(mappedBy = "products")
-    private Set<Sale> sales;
 }
