@@ -28,7 +28,7 @@ public class Sale {
     @Column(name = "sale_date")
     private LocalDate date;
 
-    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SaleDetail> saleDetails = new ArrayList<>();
 
     public void addSaleDetail(SaleDetail saleDetail) {

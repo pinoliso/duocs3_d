@@ -45,6 +45,20 @@ public class SaleService {
         return Optional.of(newSale);
     }
 
+    public Optional<Sale> updateSale(Long id, Sale updatedSale) {
+        if (saleRepository.existsById(id)) {
+            updatedSale.setId(id); 
+            for(SaleDetail saleDetail: updatedSale.getSaleDetails()) {
+                Optional<Product> optionalProduct = productRepository.findById(saleDetail.getProduct().getId());
+                saleDetail.setProduct((Product) optionalProduct.get());
+                saleDetail.setSale(updatedSale);
+            }
+            return Optional.of(saleRepository.save(updatedSale));
+        } else {
+            return Optional.empty();
+        }
+    }
+
     public List<Sale> getAllSales() {
         return saleRepository.findAll();
     }
