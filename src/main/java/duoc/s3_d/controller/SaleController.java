@@ -49,7 +49,7 @@ public class SaleController {
 
         for (int i = 1; i <= 100; i++) {
             Sale sale = new Sale();
-            sale.setDate(LocalDate.of(2023, (1 + random.nextInt(12)), (1 + random.nextInt(29))));
+            sale.setDate(LocalDate.of(2023, (1 + random.nextInt(12)), (1 + random.nextInt(28))));
             Integer cantidadProductos = (1 + random.nextInt(10));
             for (int j = 0; j < cantidadProductos; j++) {
                 Product product = productService.getRandomProduct();
@@ -59,7 +59,7 @@ public class SaleController {
                 sale.addSaleDetail(saleDetail);
             }
 
-            saleService.saveSale(sale);
+            saleService.createSale(sale);
         }
 
     }
@@ -136,6 +136,21 @@ public class SaleController {
         } catch (DataAccessException e) {
             log.info("Error al acceder a la base de datos");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Error al acceder a la base de datos"));
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createSale(@RequestBody Sale sale) {
+        try {
+            Optional<Sale> newSale = saleService.saveSale(sale);
+            if (!newSale.isPresent()) {
+                log.error("Error al crear el estudiante {}", sale);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse("Error al crear la venta"));
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).body(newSale);
+        } catch (Exception e) {
+            log.info("Error al acceder a la base de datos");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Error al crear la venta: " + e.getMessage()));
         }
     }
 

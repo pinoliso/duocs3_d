@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.CascadeType;
 import lombok.Data;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinTable;
@@ -26,7 +27,7 @@ public class SaleDetail {
 
     private int quantity;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "sale_id")
     @JsonIgnore
     private Sale sale;
@@ -36,6 +37,9 @@ public class SaleDetail {
     private Product product;
 
     public double getProfit() {
+        if(product == null) {
+            return 0.0;
+        }
         return product.getSellingPrice() - product.getCostPrice();
     }
 

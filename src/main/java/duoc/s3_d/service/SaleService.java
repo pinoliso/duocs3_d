@@ -9,17 +9,40 @@ import java.time.LocalDate;
 import java.text.DecimalFormat;
 
 import duoc.s3_d.repository.SaleRepository;
+import duoc.s3_d.repository.SaleDetailRepository;
+import duoc.s3_d.repository.ProductRepository;
 import duoc.s3_d.model.Sale;
 import duoc.s3_d.model.SaleDetail;
+import duoc.s3_d.model.Product;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class SaleService {
 
+    private static final Logger log = LoggerFactory.getLogger(SaleService.class);
+
     @Autowired
     private SaleRepository saleRepository;
+    @Autowired
+    private SaleDetailRepository saleDetailRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
-    public void saveSale(Sale sale) {
-        saleRepository.save(sale);
+    public Sale createSale(Sale sale) {
+        return saleRepository.save(sale);
+    }
+
+    public Optional<Sale> saveSale(Sale sale) {
+        Sale newSale = saleRepository.save(sale);
+        for(SaleDetail saleDetail: newSale.getSaleDetails()) {
+            Optional<Product> optionalProduct = productRepository.findById(saleDetail.getProduct().getId());
+            saleDetail.setProduct((Product) optionalProduct.get());
+            saleDetail.setSale(newSale);
+        }
+        saleRepository.save(newSale);
+        return Optional.of(newSale);
     }
 
     public List<Sale> getAllSales() {
