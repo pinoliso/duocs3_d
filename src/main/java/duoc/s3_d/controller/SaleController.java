@@ -13,11 +13,6 @@ import duoc.s3_d.model.SaleDetail;
 import duoc.s3_d.service.SaleService;
 import duoc.s3_d.service.ProductService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Random;
@@ -31,25 +26,6 @@ import jakarta.annotation.PostConstruct;
 @RequestMapping("/sales")
 public class SaleController {
 
-    // private ArrayList<Sale> sales = new ArrayList<Sale>();
-
-    // public SaleController() {
-
-    //     Product product1 = new Product(1L, "Casita de Perro", 10.0, 15.0);
-    //     Product product2 = new Product(2L, "Hueso", 8.0, 12.0);
-    //     Product product3 = new Product(3L, "Cepillo para gato", 8.0, 12.0);
-
-    //     sales.add(new Sale(1L, LocalDate.of(2023, 12, 20), List.of(new SaleDetail(product1, 2))));
-    //     sales.add(new Sale(2L, LocalDate.of(2024, 1, 3), List.of(new SaleDetail(product1, 3),new SaleDetail(product2, 1),new SaleDetail(product3, 1))));
-    //     sales.add(new Sale(3L, LocalDate.of(2024, 1, 10), List.of(new SaleDetail(product2, 2),new SaleDetail(product3, 1))));
-    //     sales.add(new Sale(4L, LocalDate.of(2024, 2, 14), List.of(new SaleDetail(product1, 4),new SaleDetail(product3, 3))));
-    //     sales.add(new Sale(5L, LocalDate.of(2024, 2, 14), List.of(new SaleDetail(product2, 2),new SaleDetail(product3, 1))));
-    //     sales.add(new Sale(6L, LocalDate.of(2024, 3, 22), List.of(new SaleDetail(product1, 1),new SaleDetail(product2, 2))));
-    //     sales.add(new Sale(7L, LocalDate.of(2024, 3, 23), List.of(new SaleDetail(product2, 1),new SaleDetail(product3, 3))));
-    //     sales.add(new Sale(8L, LocalDate.of(2024, 3, 24), List.of(new SaleDetail(product3, 4))));
-    // }
-
-    
     private static final Logger log = LoggerFactory.getLogger(SaleController.class);
 
     @Autowired
@@ -73,7 +49,7 @@ public class SaleController {
 
         for (int i = 1; i <= 100; i++) {
             Sale sale = new Sale();
-            sale.setDate(LocalDate.of(2024, (1 + random.nextInt(12)), (1 + random.nextInt(29))));
+            sale.setDate(LocalDate.of(2023, (1 + random.nextInt(12)), (1 + random.nextInt(29))));
             Integer cantidadProductos = (1 + random.nextInt(10));
             for (int j = 0; j < cantidadProductos; j++) {
                 Product product = productService.getRandomProduct();
@@ -88,76 +64,90 @@ public class SaleController {
 
     }
 
-    // @GetMapping
-    // public ArrayList<Sale> getSales() {
-    //     System.out.println("Respondiendo sales");
-    //     return sales;
-    // }
+    @GetMapping
+    public ResponseEntity<?> getSales() {
+        log.info("GET /sales");
+        try {
+            return ResponseEntity.ok(saleService.getAllSales());
+        } catch (DataAccessException e) {
+            log.info("Error al acceder a la base de datos");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Error al acceder a la base de datos"));
+        }
+    }
 
-    // @GetMapping("/{id}")
-    // public Sale getSaleById(@PathVariable Long id) {
-    //     for (Sale sale : sales) {
-    //         if (sale.getId() == id) {
-    //             System.out.println("Respondiendo sales " + id);
-    //             return sale;
-    //         }
-    //     }
-    //     return null;
-    // }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getSaleById(@PathVariable Long id) {
+        log.info("GET /sales/" + id);
 
-    // @GetMapping("/profits/day/{date}")
-    // public Map<String, Object> getProfitsByDay(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-    //     double profits = 0.0;
-    //     for (Sale sale : sales) {
-    //         if (sale.getDate().isEqual(date)) {
-    //             List<SaleDetail> saleDetails = sale.getSaleDetails();
-    //             for(SaleDetail saleDetail: saleDetails) {
-    //                 profits += saleDetail.getTotalProfit();
-    //             }
-    //         }
-    //     }
-    //     System.out.println("Respondiendo ganancias diarias " + date);
-    //     return responseFormat(profits);
-    // }
+        if (id == null || id <= 0) {
+            log.info("Error de parámetro");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse("El ID de la venta no es válido"));
+        }
 
-    // @GetMapping("/profits/month/{year}/{month}")
-    // public Map<String, Object> getProfitsByMonth(@PathVariable("year") int year, @PathVariable("month") int month) {
-    //     double profits = 0.0;
-    //     for (Sale sale : sales) {
-    //         if (sale.getDate().getYear() == year && sale.getDate().getMonthValue() == month) {
-    //             List<SaleDetail> saleDetails = sale.getSaleDetails();
-    //             for(SaleDetail saleDetail: saleDetails) {
-    //                 profits += saleDetail.getTotalProfit();
-    //             }
-    //         }
-    //     }
-    //     System.out.println("Respondiendo ganancias mensual " + month + ", " + year);
-    //     return responseFormat(profits);
-    // }
+        try {
+            Optional<Sale> optionalSale = saleService.getSaleById(id);
+            if (!optionalSale.isPresent()) {
+                log.info("No se encontro el registro " + id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("No se encontró ninguna publicación con el ID proporcionado"));
+                
+            } 
 
-    // @GetMapping("/profits/year/{year}")
-    // public Map<String, Object> getProfitsByYear(@PathVariable("year") int year) {
-    //     double profits = 0.0;
-    //     for (Sale sale : sales) {
-    //         if (sale.getDate().getYear() == year) {
-    //             List<SaleDetail> saleDetails = sale.getSaleDetails();
-    //             for(SaleDetail saleDetail: saleDetails) {
-    //                 profits += saleDetail.getTotalProfit();
-    //             }
-    //         }
-    //     }
-    //     System.out.println("Respondiendo ganancias anual " + year);
-    //     return responseFormat(profits);
-    // }
+            Sale sale = optionalSale.get();
+            return ResponseEntity.ok(sale);
+        } catch (DataAccessException e) {
+            log.info("Error al acceder a la base de datos");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Error al acceder a la base de datos"));
+        }
+    }
 
-    // private Map<String, Object> responseFormat(Double number) {
-    //     Map<String, Object> response = new HashMap<>();
-    //     response.put("profits", formatNumber(number));
-    //     return response;
-    // }
+    @GetMapping("/profits/day/{date}")
+    public ResponseEntity<?> getProfitsByDay(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        log.info("GET /profit/day/" + date);
+        
+        try {
+            String profit = saleService.getProfitsByDay(date);
+            return ResponseEntity.ok(new MessageResponse("Las ganancias para " + date + " son de: " + profit));
+        } catch (DataAccessException e) {
+            log.info("Error al acceder a la base de datos");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Error al acceder a la base de datos"));
+        }
+    }
 
-    // private String formatNumber(Double number) {
-    //     DecimalFormat df = new DecimalFormat("0.0");
-    //     return df.format(number);
-    // }
+    @GetMapping("/profits/month/{year}/{month}")
+    public ResponseEntity<?> getProfitsByMonth(@PathVariable("year") int year, @PathVariable("month") int month) {
+        log.info("GET /profit/month/" + year + "/" + month);
+        
+        try {
+            String profit = saleService.getProfitsByMonth(year, month);
+            return ResponseEntity.ok(new MessageResponse("Las ganancias para " + month + "/" + year + " son de: " + profit));
+        } catch (DataAccessException e) {
+            log.info("Error al acceder a la base de datos");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Error al acceder a la base de datos"));
+        }
+    }
+
+    @GetMapping("/profits/year/{year}")
+    public ResponseEntity<?> getProfitsByYear(@PathVariable("year") int year) {
+        log.info("GET /profit/year/" + year);
+        
+        try {
+            String profit = saleService.getProfitsByYear(year);
+            return ResponseEntity.ok(new MessageResponse("Las ganancias para " + year + " son de: " + profit));
+        } catch (DataAccessException e) {
+            log.info("Error al acceder a la base de datos");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Error al acceder a la base de datos"));
+        }
+    }
+
+    static class MessageResponse {
+        private final String message;
+    
+        public MessageResponse(String message) {
+            this.message = message;
+        }
+    
+        public String getMessage() {
+            return message;
+        }
+    }
 }
