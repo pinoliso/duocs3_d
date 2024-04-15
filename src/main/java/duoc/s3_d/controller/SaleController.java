@@ -176,6 +176,28 @@ public class SaleController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePublication(@PathVariable Long id){
+
+        if (id == null || id <= 0) {
+            log.info("Error de parámetro");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse("El ID de la venta no es válido"));
+        }
+        
+        try {
+            Optional<Sale> optionalSale = saleService.getSaleById(id);
+            if (!optionalSale.isPresent()) {
+                log.info("No se encontro el registro " + id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("No se encontró ninguna venta con el ID proporcionado"));
+            } 
+            saleService.deleteSale(id);
+            return ResponseEntity.ok(new MessageResponse("Se eliminó exitosamente la venta " + id));
+        } catch (Exception e) {
+            log.info("Error al acceder a la base de datos");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Error al crear la venta"));
+        }
+    }
+
     static class MessageResponse {
         private final String message;
     

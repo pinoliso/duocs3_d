@@ -107,6 +107,10 @@ public class SaleService {
         return formatNumber(profits);
     }
 
+    public void deleteSale(Long id) {
+        saleRepository.deleteById(id);
+    }
+
     private String formatNumber(Double number) {
         DecimalFormat df = new DecimalFormat("0.0");
         return df.format(number);
