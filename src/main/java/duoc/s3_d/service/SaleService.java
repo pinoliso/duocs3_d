@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.text.DecimalFormat;
 
 import duoc.s3_d.repository.SaleRepository;
-import duoc.s3_d.repository.SaleDetailRepository;
 import duoc.s3_d.repository.ProductRepository;
 import duoc.s3_d.model.Sale;
 import duoc.s3_d.model.SaleDetail;
@@ -25,8 +24,6 @@ public class SaleService {
 
     @Autowired
     private SaleRepository saleRepository;
-    @Autowired
-    private SaleDetailRepository saleDetailRepository;
     @Autowired
     private ProductRepository productRepository;
 
