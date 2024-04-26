@@ -13,12 +13,18 @@ import duoc.s3_d.model.SaleDetail;
 import duoc.s3_d.service.SaleService;
 import duoc.s3_d.service.ProductService;
 
+import java.util.List;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import jakarta.annotation.PostConstruct;
 
@@ -67,12 +73,17 @@ public class SaleController {
     @GetMapping
     public ResponseEntity<?> getSales() {
         log.info("GET /sales");
-        try {
-            return ResponseEntity.ok(saleService.getAllSales());
-        } catch (DataAccessException e) {
-            log.info("Error al acceder a la base de datos");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Error al acceder a la base de datos"));
-        }
+        
+        List<EntityModel<Sale>> sales = saleService.getAllSales().stream()
+            .map(sale -> EntityModel.of(sale,
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getSaleById(sale.getId())).withSelfRel()
+            )).collect(Collectors.toList());
+
+        CollectionModel<EntityModel<Sale>> collection = CollectionModel.of(sales, 
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getSales()).withRel("sales")
+        );
+
+        return ResponseEntity.ok(collection);
     }
 
     @GetMapping("/{id}")
@@ -92,8 +103,11 @@ public class SaleController {
                 
             } 
 
-            Sale sale = optionalSale.get();
-            return ResponseEntity.ok(sale);
+            EntityModel<Sale> sale = EntityModel.of(optionalSale.get(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getSaleById(id)).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getSales()).withRel("all-publications")
+            );
+            return  ResponseEntity.ok(sale);
         } catch (DataAccessException e) {
             log.info("Error al acceder a la base de datos");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Error al acceder a la base de datos"));
