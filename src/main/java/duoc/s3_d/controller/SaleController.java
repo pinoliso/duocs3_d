@@ -105,7 +105,7 @@ public class SaleController {
 
             EntityModel<Sale> sale = EntityModel.of(optionalSale.get(),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getSaleById(id)).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getSales()).withRel("all-publications")
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getSales()).withRel("all-sales")
             );
             return  ResponseEntity.ok(sale);
         } catch (DataAccessException e) {
