@@ -161,7 +161,12 @@ public class SaleController {
                 log.error("Error al crear el estudiante {}", sale);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse("Error al crear la venta"));
             }
-            return ResponseEntity.status(HttpStatus.CREATED).body(newSale);
+            
+            EntityModel<Sale> saleEntity = EntityModel.of(newSale.get(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getSaleById(newSale.get().getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getSales()).withRel("all-sales")
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).body(saleEntity);
         } catch (Exception e) {
             log.info("Error al acceder a la base de datos");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Error al crear la venta: " + e.getMessage()));
@@ -177,13 +182,17 @@ public class SaleController {
         }
 
         try {
-            Optional<Sale> optionalSale = saleService.getSaleById(id);
+            Optional<Sale> optionalSale = saleService.updateSale(id, sale);
             if (!optionalSale.isPresent()) {
                 log.info("No se encontro el registro " + id);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("No se encontró ninguna venta con el ID proporcionado"));
             } 
 
-            return ResponseEntity.ok(saleService.updateSale(id, sale));
+            EntityModel<Sale> saleEntity = EntityModel.of(optionalSale.get(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getSaleById(optionalSale.get().getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getSales()).withRel("all-sales")
+            );
+            return ResponseEntity.ok(saleEntity);
         } catch (Exception e) {
             log.info("Error al acceder a la base de datos");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Error al crear la venta"));
