@@ -8,12 +8,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.CascadeType;
 import lombok.Data;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.Set;
-import java.util.List;
-import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
