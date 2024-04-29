@@ -41,7 +41,7 @@ public class SaleServiceTest {
 
     @Test
     void deleteSaleTest() {
-         LocalDate fixedDate = LocalDate.of(2022, 1, 1);
+        LocalDate fixedDate = LocalDate.of(2022, 1, 1);
         Sale sale = new Sale();
         sale.setDate(fixedDate);
         when(saleRepositoryMock.save(any())).thenReturn(sale);
