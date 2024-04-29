@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>duoc</groupId>
-	<artifactId>s3_c</artifactId>
+	<artifactId>s3_d</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>s3_c</name>
+	<name>s3_d</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>21</java.version>

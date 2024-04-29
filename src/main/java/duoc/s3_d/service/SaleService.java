@@ -14,13 +14,8 @@ import duoc.s3_d.model.Sale;
 import duoc.s3_d.model.SaleDetail;
 import duoc.s3_d.model.Product;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Service
 public class SaleService {
-
-    private static final Logger log = LoggerFactory.getLogger(SaleService.class);
 
     @Autowired
     private SaleRepository saleRepository;
