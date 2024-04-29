@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: duoc.s3_d.repository.SaleRepositoryTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.441 s -- in duoc.s3_d.repository.SaleRepositoryTest
