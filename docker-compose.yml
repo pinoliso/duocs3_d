@@ -7,7 +7,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - spring.datasource.url=jdbc:oracle:thin:@t8cbne3y507zuv36_high?TNS_ADMIN=/app/oracle_wallet/
-      - spring.datasource.username=fullstack
-      - spring.datasource.password=Atangana.123
+      - spring.datasource.url=jdbc:oracle:thin:@wa78o52a366buw31_tp?TNS_ADMIN=/app/oracle_wallet/
+      - spring.datasource.username=ADM_001
+      - spring.datasource.password=oKU8NM334tf21
     restart: always
