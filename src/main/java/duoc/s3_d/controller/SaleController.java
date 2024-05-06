@@ -53,7 +53,7 @@ public class SaleController {
         }
 
 
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 20; i++) {
             Sale sale = new Sale();
             sale.setDate(LocalDate.of(2023, (1 + random.nextInt(12)), (1 + random.nextInt(28))));
             Integer cantidadProductos = (1 + random.nextInt(10));
